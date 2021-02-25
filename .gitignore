@@ -1,3 +1,10 @@
+# Custom
+desktop.ini
+model/
+real/
+toy/
+*.pdf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
