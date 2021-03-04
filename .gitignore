@@ -1,6 +1,7 @@
 # Custom
 desktop.ini
 .idea/
+.idea
 model/
 real/
 toy/
@@ -10,6 +11,7 @@ GNM/
 GNP/
 WS/
 *.pdf
+*.xml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
