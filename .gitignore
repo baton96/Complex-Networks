@@ -1,8 +1,14 @@
 # Custom
 desktop.ini
+.idea/
 model/
 real/
 toy/
+BA/
+CM/
+GNM/
+GNP/
+WS/
 *.pdf
 
 # Byte-compiled / optimized / DLL files
