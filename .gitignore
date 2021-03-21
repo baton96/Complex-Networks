@@ -5,13 +5,20 @@ desktop.ini
 model/
 real/
 toy/
+*.pdf
+*.xml
+
+# A2
 BA/
 CM/
 GNM/
 GNP/
 WS/
-*.pdf
-*.xml
+
+# A4
+xml/
+txt/
+net/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
