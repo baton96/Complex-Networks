@@ -1,4 +1,3 @@
-#include <unordered_map>
 #include <algorithm>
 #include <iostream>
 #include <iterator>
@@ -6,7 +5,6 @@
 #include <fstream>
 #include <vector>
 #include <tuple>
-#include <set>
 
 using namespace std;
 
@@ -19,29 +17,30 @@ float a = 0.5;
 float random(){ // random flot in range
 	return float(rand())/float((RAND_MAX));
 }
- 
-int main(){
+
+int main(int argc, char** argv){
 	vector<tuple<int, int>> edges;
-	set<int> unique;
+	int vcount = 0;
 	
-	string s = "output.txt";	
-	ofstream output("output.txt");
-	output << "output.txt" << endl << "a: " << a << endl;
-	
-	ifstream input("input.net");
+	string name = argv[1];
+	ifstream input(name);
+	string line;
 	int i, j;
 	float x;
-	while (input >> i >> j >> x){
-		unique.insert(i-1);
-		unique.insert(j-1);
-		
-		tuple<int, int> edge1 = {i-1, j-1};
-		tuple<int, int> edge2 = {j-1, i-1};
-		edges.push_back(edge1);
-		edges.push_back(edge2);		
+	while (getline(input, line)){
+		if(line=="*Edges ") break;
 	}
-	input.close();	
-	int vcount = unique.size();	
+	while (getline(input, line)){
+		input >> i >> j >> x;
+		int i2 = i-1;
+		int j2 = j-1;
+		tuple<int, int> edge = {i2, j2};
+		edges.push_back(edge);
+		if(j2>vcount) vcount = j2;
+	}
+	
+	name = name.substr(0, name.find(".net"));
+	ofstream output(name + "_" + to_string(a) + ".txt");
 	
 	bool infected_original[vcount];
 	for(int i=0;i<vcount;i++){
@@ -49,12 +48,13 @@ int main(){
 		else infected_original[i] = false;
 	}
 	
-	unordered_map<int, vector<int>> neighbors;
+	vector<int> neighbors[vcount];
 	for (auto i = edges.begin(); i != edges.end(); ++i){
 		tuple<int, int> edge = *i;
 		int source = get<0>(edge);
 		int target = get<1>(edge);
 		neighbors[source].push_back(target);
+		neighbors[target].push_back(source);
 	}
 	cout << "loaded" << endl;
 	
