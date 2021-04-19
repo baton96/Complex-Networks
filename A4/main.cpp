@@ -21,7 +21,7 @@ float random(){ // random flot in range
 int main(int argc, char** argv){
 	vector<tuple<int, int>> edges;
 	int vcount = 0;
-	
+
 	string name = argv[1];
 	ifstream input(name);
 	string line;
@@ -38,16 +38,16 @@ int main(int argc, char** argv){
 		edges.push_back(edge);
 		if(j2>vcount) vcount = j2;
 	}
-	
+
 	name = name.substr(0, name.find(".net"));
 	ofstream output(name + "_" + to_string(a) + ".txt");
-	
+
 	bool infected_original[vcount];
 	for(int i=0;i<vcount;i++){
 		if(random() < p) infected_original[i] = true;
 		else infected_original[i] = false;
 	}
-	
+
 	vector<int> neighbors[vcount];
 	for (auto i = edges.begin(); i != edges.end(); ++i){
 		tuple<int, int> edge = *i;
@@ -56,24 +56,18 @@ int main(int argc, char** argv){
 		neighbors[source].push_back(target);
 		neighbors[target].push_back(source);
 	}
-	cout << "loaded" << endl;
-	
+
 	for(float b=0;b<=1.01;b+=0.1){
-		
 		float total_avg_r = 0;
-		
 		for(int n=0;n<n_rep;n++){
-			
 			float total_avg_t = 0;
-			
-			bool infected_old[vcount];
+
+			bool *infected_old = new bool[vcount];
+			bool *infected_new = new bool[vcount];
 			memcpy(infected_old, infected_original, sizeof(bool) * vcount);
-			
+			memcpy(infected_new, infected_original, sizeof(bool) * vcount);
+
 			for(int t=0;t<t_max;t++){
-				
-				bool infected_new[vcount];
-				memcpy(infected_new, infected_old, sizeof(bool) * vcount);
-			
 				for(int i=0;i<vcount;i++){
 					if(infected_new[i]){
 						if(random()<a){
@@ -82,17 +76,15 @@ int main(int argc, char** argv){
 					}
 					else{
 						vector<int> v_neighbors = neighbors[i];
-						for(auto neighbor = v_neighbors.begin(); neighbor!=v_neighbors.end(); ++neighbor){
+						for(auto neighbor = v_neighbors.begin(); neighbor!=v_neighbors.end(); neighbor++){
 							if(infected_old[*neighbor] && random()<b){
 								infected_new[i] = true;
 								break;
 							}
 						}
 					}
-				}		
-				
-				memcpy(infected_old, infected_new, sizeof(bool) * vcount);
-				
+				}
+
 				if(t >= t_trans){
 					float sum_infected = 0;
 					for(int i=0;i<vcount;i++){
@@ -102,14 +94,14 @@ int main(int argc, char** argv){
 					}
 					total_avg_t += sum_infected/vcount;
 				}
+				swap(infected_old, infected_new);
 			}
 			total_avg_r += total_avg_t/(t_max-t_trans);
-			//cout << total_avg_t/(t_max-t_trans) << endl;
 		}
 		cout << b << " " << total_avg_r/n_rep << endl;
 		output << b << " " << total_avg_r/n_rep << endl;
 	}	
 	output.close();	
-	
+
 	return 0;
 }
