@@ -8,13 +8,13 @@
 
 using namespace std;
 
-int n_rep = 1; // number of repetitions of the simulation
+int n_rep = 10; // number of repetitions of the simulation
 float p = 0.2; // initial fraction of infected nodes
-int t_max = 1000; // maximum number of time steps of each simulation
-int t_trans = 900; // number of steps of the transitory
+int t_max = 100; // maximum number of time steps of each simulation
+int t_trans = 90; // number of steps of the transitory
 float a = 0.5;
 
-float random(){ // random flot in range
+float random(){ // random flot in range [0, 1]
 	return float(rand())/float((RAND_MAX));
 }
 
@@ -26,12 +26,11 @@ int main(int argc, char** argv){
 	ifstream input(name);
 	string line;
 	int i, j;
-	float x;
 	while (getline(input, line)){
-		if(line=="*Edges ") break;
+		if(line=="*Edges") break;
 	}
 	while (getline(input, line)){
-		input >> i >> j >> x;
+		input >> i >> j;
 		int i2 = i-1;
 		int j2 = j-1;
 		tuple<int, int> edge = {i2, j2};
@@ -57,7 +56,7 @@ int main(int argc, char** argv){
 		neighbors[target].push_back(source);
 	}
 
-	for(float b=0;b<=1.01;b+=0.1){
+	for(float b=0;b<1.01;b+=0.02){
 		float total_avg_r = 0;
 		for(int n=0;n<n_rep;n++){
 			float total_avg_t = 0;
