@@ -12,15 +12,50 @@ int n_rep = 10; // number of repetitions of the simulation
 float p = 0.2; // initial fraction of infected nodes
 int t_max = 100; // maximum number of time steps of each simulation
 int t_trans = 90; // number of steps of the transitory
-float a = 0.5;
+float a = 0.75;
+
+int vcount = 0;
+//vector<int> *neighbors;
+bool *infected_original;
 
 float random(){ // random flot in range [0, 1]
 	return float(rand())/float((RAND_MAX));
 }
 
+float mmca(float a, float b){
+	float avg = 0;
+	bool *infected_old = new bool(vcount);
+	bool *infected_new = new bool(vcount);
+	for(int i=0;i<vcount;i++){
+		infected_old[i] = infected_original[i];
+		infected_new[i] = infected_original[i];
+	}
+	
+	for(int t=0;t<1000;t++){
+		for(int i=0;i<vcount;i++){
+			float q = 1;
+			vector<int> v_neighbors = neighbors[i];
+			for(auto neighbor = v_neighbors.begin(); neighbor!=v_neighbors.end(); neighbor++){
+				q = q * (1 - b * infected_old[*neighbor]);
+			}
+			infected_new[i] = (1-infected_old[i])*(1-q) + infected_old[i]*(1-a);
+		}
+		float new_avg = 0;
+		for(int i=0;i<vcount;i++){
+			if(infected_new[i]){
+				new_avg += 1;
+			}
+		}
+		new_avg = new_avg/vcount;
+		if(new_avg==avg) return avg;
+		swap(infected_old, infected_new);
+	}
+	return 0;
+}
+
 int main(int argc, char** argv){
+	
 	vector<tuple<int, int>> edges;
-	int vcount = 0;
 
 	string name = argv[1];
 	ifstream input(name);
@@ -39,14 +74,14 @@ int main(int argc, char** argv){
 	}
 
 	name = name.substr(0, name.find(".net"));
-	ofstream output(name + "_" + to_string(a) + ".txt");
-
-	bool infected_original[vcount];
+	ofstream output(name + "_" + to_string(a) + ".mmca");
+	
+	infected_original = new bool(vcount);
 	for(int i=0;i<vcount;i++){
 		if(random() < p) infected_original[i] = true;
 		else infected_original[i] = false;
 	}
-
+	
 	vector<int> neighbors[vcount];
 	for (auto i = edges.begin(); i != edges.end(); ++i){
 		tuple<int, int> edge = *i;
@@ -55,52 +90,10 @@ int main(int argc, char** argv){
 		neighbors[source].push_back(target);
 		neighbors[target].push_back(source);
 	}
-
-	for(float b=0;b<1.01;b+=0.02){
-		float total_avg_r = 0;
-		for(int n=0;n<n_rep;n++){
-			float total_avg_t = 0;
-
-			bool *infected_old = new bool[vcount];
-			bool *infected_new = new bool[vcount];
-			memcpy(infected_old, infected_original, sizeof(bool) * vcount);
-			memcpy(infected_new, infected_original, sizeof(bool) * vcount);
-
-			for(int t=0;t<t_max;t++){
-				for(int i=0;i<vcount;i++){
-					if(infected_old[i]){
-						if(random()<a){
-							infected_new[i] = false;
-						}
-					}
-					else{
-						vector<int> v_neighbors = neighbors[i];
-						for(auto neighbor = v_neighbors.begin(); neighbor!=v_neighbors.end(); neighbor++){
-							if(infected_old[*neighbor] && random()<b){
-								infected_new[i] = true;
-								break;
-							}
-						}
-					}
-				}
-
-				if(t >= t_trans){
-					float sum_infected = 0;
-					for(int i=0;i<vcount;i++){
-						if(infected_new[i]){
-							sum_infected += 1;
-						}
-					}
-					total_avg_t += sum_infected/vcount;
-				}
-				swap(infected_old, infected_new);
-			}
-			total_avg_r += total_avg_t/(t_max-t_trans);
-		}
-		cout << b << " " << total_avg_r/n_rep << endl;
-		output << b << " " << total_avg_r/n_rep << endl;
-	}	
+	
+	for(int i=0;i<=50;i++){
+		output << mmca(0.5, (float)i/50.0) << endl;
+	}
 	output.close();	
-
 	return 0;
 }
