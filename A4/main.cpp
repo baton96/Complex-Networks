@@ -8,18 +8,18 @@
 
 using namespace std;
 
-int n_rep = 10; // number of repetitions of the simulation
+int n_rep = 50; // number of repetitions of the simulation
 float p = 0.2; // initial fraction of infected nodes
 int t_max = 100; // maximum number of time steps of each simulation
 int t_trans = 90; // number of steps of the transitory
-float a = 0.5;
+float a = 0.1;
 
-float random(){ // random flot in range [0, 1]
+float randomFloat(){ // random flot in range [0, 1]
 	return float(rand())/float((RAND_MAX));
 }
 
 int main(int argc, char** argv){
-	vector<tuple<int, int>> edges;
+	vector<tuple<int, int> > edges;
 	int vcount = 0;
 
 	string name = argv[1];
@@ -40,14 +40,14 @@ int main(int argc, char** argv){
 
 	name = name.substr(0, name.find(".net"));
 	ofstream output(name + "_" + to_string(a) + ".txt");
-
-	bool infected_original[vcount];
+	bool *infected_original= new bool[vcount];	
 	for(int i=0;i<vcount;i++){
-		if(random() < p) infected_original[i] = true;
+		if(randomFloat() < p) infected_original[i] = true;
 		else infected_original[i] = false;
 	}
 
-	vector<int> neighbors[vcount];
+	vector<int> *neighbors= new vector<int>[vcount];
+
 	for (auto i = edges.begin(); i != edges.end(); ++i){
 		tuple<int, int> edge = *i;
 		int source = get<0>(edge);
@@ -68,15 +68,15 @@ int main(int argc, char** argv){
 
 			for(int t=0;t<t_max;t++){
 				for(int i=0;i<vcount;i++){
-					if(infected_old[i]){
-						if(random()<a){
+					if(infected_new[i]){
+						if(randomFloat()<a){
 							infected_new[i] = false;
 						}
 					}
 					else{
 						vector<int> v_neighbors = neighbors[i];
 						for(auto neighbor = v_neighbors.begin(); neighbor!=v_neighbors.end(); neighbor++){
-							if(infected_old[*neighbor] && random()<b){
+							if(infected_old[*neighbor] && randomFloat()<b){
 								infected_new[i] = true;
 								break;
 							}
