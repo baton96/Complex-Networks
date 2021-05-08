@@ -1,2 +1,2 @@
 # Complex-Networks
-University project for the course of "Complex Networks"
+University projects for the course of "Complex Networks"
