@@ -1,5 +1,5 @@
 # Complex-Networks
-University project for the course of "Complex Networks"  
+Set of Python projects related to complex networks implemented for the course of "Complex Networks"  
 
 # [A1. Structural descriptors of complex networks](A1)  
 Calculation of structural descriptors of complex networks given several undirected complex networks in Pajek format (*.net), grouped in three categories: 
@@ -73,7 +73,7 @@ The hypothesis was to find out weather or not the structural descriptors retriev
 This section covers the following standard steps necessary to build and evaluate the classifier. 
 The program was implemented in Python, utilising the library igraph for network-related tasks. 
 A simplified overview of the process can be seen below.  
-![](method.png)
+![](data/imgs/method.png)
 
 ## Data Acquisition
 Data from different language groups were needed to generate networks. 
@@ -141,9 +141,9 @@ The results of the dimensionality reduction can be observed below. Both of the u
 enforce a clustering of the data that is visually meaningful despite the large reduction in
 dimensionality.  
 ### Linear Discriminant Analysis (LDA)
-![](lda.png)
+![](data/imgs/lda.png)
 ### Neighborhood Components Analysis (NCA)
-![](nca.png)
+![](data/imgs/nca.png)
 
 ## Further Work
 Possible improvement and future work could be:
