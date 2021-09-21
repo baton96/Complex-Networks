@@ -1,4 +1,4 @@
-# Complex-Networks 🕸️
+# 🕸️ Complex-Networks 🕸️
 Set of Python projects related to complex networks implemented for the course of "Complex Networks"  
 
 # [A1. Structural descriptors of complex networks](A1)  
